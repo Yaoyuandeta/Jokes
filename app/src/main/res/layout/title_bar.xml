@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:background="@drawable/ic_title">
+    <ImageButton
+        android:id="@+id/setting_imageButton"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_setting"
+        android:onClick="stClick"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:layout_marginLeft="10dp"
+        android:padding="5dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Jokes"
+        android:textSize="20sp"
+        android:textColor="#e66f6f"
+        android:id="@+id/textView2"
+        android:gravity="center"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

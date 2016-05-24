@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/splash_layout"
+    android:background="@drawable/splash_back">
+    <ImageView
+        android:id="@+id/jokes_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp" />
+    <TextView
+        android:layout_below="@id/jokes_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#395c9d"
+        android:layout_marginTop="15dp"
+        android:textSize="50sp"
+        android:text="笑话大全"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView" />
+
+</RelativeLayout>

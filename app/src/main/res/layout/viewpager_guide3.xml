@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    >
+    <ImageView
+        android:id="@+id/viewpager_guide2img"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
+        android:src="@mipmap/ic_eats"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:id="@+id/viewpager3_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:padding="5dp"
+        android:text="如果您是在各大应用市场上下载的本软件，有什么意见或者建议也很欢迎你能联系我，让我们一起将这个APP做得更好。联系方式在【设置】-【关于】界面上能够找到。"
+        android:layout_below="@id/viewpager_guide2img"
+        android:layout_centerHorizontal="true" />
+    <Button
+        android:id="@+id/guide_button"
+        android:layout_width="wrap_content"
+        android:background="#e21a1a"
+        android:textSize="20sp"
+        android:textColor="#fff"
+        android:padding="20dp"
+        android:layout_height="wrap_content"
+        android:text="进入应用"
+        android:layout_below="@+id/viewpager3_text"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

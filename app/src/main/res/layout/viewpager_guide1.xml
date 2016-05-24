@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <ImageView
+        android:id="@+id/bm_img"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
+        android:src="@mipmap/ic_logo"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textColor="#fff"
+        android:padding="5dp"
+        android:textSize="20sp"
+        android:text="欢迎使用笑话大全(Jokes)，首先感谢您选择安装了这款APP，这是一款实时更新段子和小笑话的应用，它能够很好的打发时间，更重要的是它能在您心情低落时博君一笑，让你走出心理阴霾。"
+        android:layout_below="@+id/bm_img"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_back">
+    <include
+        android:id="@+id/home_title" layout="@layout/title_bar"/>
+    <com.example.tangyi.jokes.Tools.HomeViewPager
+        android:id="@+id/viewpager_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    <RadioGroup
+        android:id="@+id/radio_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#7f7a7a"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <RadioButton
+            android:id="@+id/radio_button1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:drawableTop="@drawable/tab_joke_selector"
+            android:button="@null"
+            android:textColor="@color/tab_txt_selector"
+            android:drawablePadding="3dp"
+            android:padding="5dp"
+            android:text="笑话"
+            android:gravity="center"/>
+        <RadioButton
+            android:id="@+id/radio_button2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:drawableTop="@drawable/tab_photo_selector"
+            android:button="@null"
+            android:textColor="@color/tab_txt_selector"
+            android:drawablePadding="3dp"
+            android:padding="5dp"
+            android:text="趣图"
+            android:gravity="center"/>
+    </RadioGroup>
+
+</LinearLayout>
