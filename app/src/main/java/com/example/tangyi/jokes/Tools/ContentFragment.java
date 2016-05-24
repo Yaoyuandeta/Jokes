@@ -62,7 +62,6 @@ public class ContentFragment extends Fragment {
     private SwipeRefreshLayout swipeLayout;
     //声明图片页下拉刷新控件
     private SwipeRefreshLayout photoSwipe;
-    private GifImageView gifImage;
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.fragment_content,null);
