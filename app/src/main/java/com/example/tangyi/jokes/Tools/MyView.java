@@ -9,8 +9,8 @@ public class MyView {
     /***
      * GitHub测试
      */
-
     private String st;
+    private int A;
 
     public void setSt(String st) {
         this.st = st;
