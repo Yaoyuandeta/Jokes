@@ -6,7 +6,7 @@
         android:id="@+id/swiperefresh_layout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.example.tangyi.jokes.Tools.MyListView
+        <ListView
             android:id="@+id/image_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
