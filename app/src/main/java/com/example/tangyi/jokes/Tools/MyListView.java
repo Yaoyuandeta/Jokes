@@ -86,8 +86,7 @@ public class MyListView extends ListView implements AbsListView.OnScrollListener
      * 1.下拉刷新，上拉加载的回调接口
      */
     public interface OnRefreshListener{
-        //下拉刷新
-        public void onRefresh();
+
         //上拉加载
         public void onLoadMore();
     }
