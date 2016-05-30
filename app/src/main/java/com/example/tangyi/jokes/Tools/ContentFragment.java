@@ -1,11 +1,12 @@
 package com.example.tangyi.jokes.Tools;
 
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,9 +48,9 @@ public class ContentFragment extends Fragment {
     //主页底栏下的RadioGroup。
     private RadioGroup rg;
     //主页的文字ListView;
-    private ListView homeList;
+    private MyListView homeList;
     //主页的图片ListView
-    private ListView imageList;
+    private MyListView imageList;
     //Json数据对象
     private ArrayList<Result.Data> jokesDataList;
     //Json图片数据对象
@@ -62,16 +63,53 @@ public class ContentFragment extends Fragment {
     private SwipeRefreshLayout swipeLayout;
     //声明图片页下拉刷新控件
     private SwipeRefreshLayout photoSwipe;
+    //API page页数字段值
+    private int page=1;
+    private Result.Data data;
+    //下一页的数据链接
+    private String mMoreUrl;
+
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.fragment_content,null);
         homeViewPager=(HomeViewPager)view.findViewById(R.id.viewpager_home);
         rg=(RadioGroup)view.findViewById(R.id.radio_main);
 
+
         //初始化ViewPager的函数。
         initViewPagerData();
         initView();
         return view;
+    }
+    //加载下一页数据
+    private void getMoreDataFromServer(){
+        HttpUtils utils=new HttpUtils();
+        for (page=2;page<50;page++) {
+            //mMoreUrl=URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2;
+            utils.send(HttpRequest.HttpMethod.GET,URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2,
+                    //请求的是什么内容，泛型就写入相对应的数据类型。
+                    new RequestCallBack<String>() {
+
+                        //请求成功
+                        @Override
+                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                            String result=responseInfo.result;
+                            processData(result);
+                        }
+
+                        //请求失败
+                        @Override
+                        public void onFailure(HttpException e, String s) {
+                            e.printStackTrace();
+                            Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
+                        }
+
+
+
+                    });
+        }
+        //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
+
     }
     //此函数用于设置RadioButton的自定义图片的大小
     private void initView(){
@@ -102,9 +140,18 @@ public class ContentFragment extends Fragment {
         //实例化文字页SwipeRefreshLayout.(Google官方下拉刷新控件)
         swipeLayout=(SwipeRefreshLayout)view1.findViewById(R.id.swiperefresh_layout);
         //ListView在View1的布局文件中，就必须在该布局文件中寻找Id并实例化，否则会空指针异常。
-        homeList=(ListView)view1.findViewById(R.id.home_list);
+        homeList=(MyListView)view1.findViewById(R.id.home_list);
+        homeList.setOnRefreshListener(new MyListView.OnRefreshListener() {
+            @Override
+            public void onLoadMore() {
+
+                    getMoreDataFromServer();
+
+            }
+        });
+
         //图片List实例化
-        imageList=(ListView)view2.findViewById(R.id.image_list);
+        imageList=(MyListView)view2.findViewById(R.id.image_list);
         //图片页下拉刷新
         photoSwipe=(SwipeRefreshLayout)view2.findViewById(R.id.swiperefresh_layout2);
         photoSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -185,19 +232,15 @@ public class ContentFragment extends Fragment {
         getDataFromServer();
         getDataFromImageServer();
     }
+
     //利用xUtils框架请求数据。
     private void getDataFromServer(){
         HttpUtils utils=new HttpUtils();
         //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
-        utils.send(HttpRequest.HttpMethod.GET, URLList.CATEGORY_URL,
+        utils.send(HttpRequest.HttpMethod.GET, URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2,
                 //请求的是什么内容，泛型就写入相对应的数据类型。
                 new RequestCallBack<String>() {
-                    //请求失败
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        e.printStackTrace();
-                        Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
-                    }
+
 
                     //请求成功
                     @Override
@@ -205,6 +248,14 @@ public class ContentFragment extends Fragment {
                         String result=responseInfo.result;
                         processData(result);
                     }
+
+                    //请求失败
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
+                    }
+
                 });
     }
     //使用Gson解析Json数据
@@ -218,6 +269,14 @@ public class ContentFragment extends Fragment {
             JsonBean fromJson = gson.fromJson(json, JsonBean.class);
             //定义Json数据对象。
             jokesDataList = fromJson.getResult().getData();
+
+            if (data!=null){
+                page++;
+                mMoreUrl = URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2;
+            }else{
+                mMoreUrl=null;
+            }
+
             listAdapter = new HomeListAdapter();
             //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
             if (jokesDataList!=null) {
@@ -238,9 +297,9 @@ public class ContentFragment extends Fragment {
             }else {
                 holder=(ViewHolder)convertView.getTag();
             }
-            Result.Data data=(Result.Data)getItem(position);
-            holder.contentText.setText("        "+data.getContent());
-            holder.timerText.setText("更新时间："+data.getUpdatetime());
+            data = (Result.Data)getItem(position);
+            holder.contentText.setText("        "+ data.getContent());
+            holder.timerText.setText("更新时间："+ data.getUpdatetime());
             return convertView;
         }
         @Override
@@ -278,7 +337,7 @@ public class ContentFragment extends Fragment {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result=responseInfo.result;
-                        processImageData(result);
+                        //processImageData(result);
                     }
                 });
     }
