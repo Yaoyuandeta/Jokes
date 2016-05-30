@@ -18,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tangyi.jokes.MainActivity;
 import com.example.tangyi.jokes.R;
 import com.google.gson.Gson;
 import com.lidroid.xutils.BitmapUtils;
@@ -64,10 +65,8 @@ public class ContentFragment extends Fragment {
     //声明图片页下拉刷新控件
     private SwipeRefreshLayout photoSwipe;
     //API page页数字段值
-    private int page=1;
+    private int page=2;
     private Result.Data data;
-    //下一页的数据链接
-    private String mMoreUrl;
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
@@ -81,20 +80,22 @@ public class ContentFragment extends Fragment {
         initView();
         return view;
     }
-    //加载下一页数据
+
+    /**
+     * 当加载更多数据时，就调用此方法
+     * 请求成功后，在onSuccess()方法中调用processData()方法进行数据解析时，第二个参数传入的是true
+     * 就会执行该方法中if语句中的else语句。
+     */
     private void getMoreDataFromServer(){
         HttpUtils utils=new HttpUtils();
-        for (page=2;page<50;page++) {
-            //mMoreUrl=URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2;
-            utils.send(HttpRequest.HttpMethod.GET,URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2,
-                    //请求的是什么内容，泛型就写入相对应的数据类型。
+        utils.send(HttpRequest.HttpMethod.GET,URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2,
                     new RequestCallBack<String>() {
 
                         //请求成功
                         @Override
                         public void onSuccess(ResponseInfo<String> responseInfo) {
                             String result=responseInfo.result;
-                            processData(result);
+                            processData(result,true);
                         }
 
                         //请求失败
@@ -107,7 +108,7 @@ public class ContentFragment extends Fragment {
 
 
                     });
-        }
+
         //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
 
     }
@@ -146,7 +147,13 @@ public class ContentFragment extends Fragment {
             public void onLoadMore() {
 
                     getMoreDataFromServer();
-
+                //getDataFromServer();
+                if (data!=null) {
+                    page++;
+                }else{
+                    page=2;
+                    Toast.makeText(getContext(),"没有更多数据！",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -237,7 +244,7 @@ public class ContentFragment extends Fragment {
     private void getDataFromServer(){
         HttpUtils utils=new HttpUtils();
         //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
-        utils.send(HttpRequest.HttpMethod.GET, URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2,
+        utils.send(HttpRequest.HttpMethod.GET, URLList.CATEGORY_URL1+1+URLList.CATEGORY_URL2,
                 //请求的是什么内容，泛型就写入相对应的数据类型。
                 new RequestCallBack<String>() {
 
@@ -246,7 +253,7 @@ public class ContentFragment extends Fragment {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result=responseInfo.result;
-                        processData(result);
+                        processData(result,false);
                     }
 
                     //请求失败
@@ -258,8 +265,15 @@ public class ContentFragment extends Fragment {
 
                 });
     }
-    //使用Gson解析Json数据
-    private void processData(String json){
+    /**
+     * processData()函数用于解析Json数据
+     * 使用Gson框架解析数据
+     * 该方法中第一个参数为服务器传回的数据源，第二个参数作为标记，用于将ListView的数据进行合并，表示更多数据
+     * 当isMore为非状态时，也就是不是更多数据的状态时，数据正常显示
+     * 否则的话，也就是加载了更多的数据时，将更多数据的Json对象重新创建，并追加到原来的ListView中，进行合并
+     */
+
+    private void processData(String json,boolean isMore){
 
             Gson gson = new Gson();
             /**
@@ -267,20 +281,24 @@ public class ContentFragment extends Fragment {
              * Json数据中字段对应的内容就是JAVA对象中字段内所存储的内容。
              */
             JsonBean fromJson = gson.fromJson(json, JsonBean.class);
-            //定义Json数据对象。
-            jokesDataList = fromJson.getResult().getData();
 
-            if (data!=null){
-                page++;
-                mMoreUrl = URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2;
-            }else{
-                mMoreUrl=null;
-            }
+            if (!isMore){
+                //定义Json数据对象。
+                jokesDataList = fromJson.getResult().getData();
 
-            listAdapter = new HomeListAdapter();
-            //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
-            if (jokesDataList!=null) {
+                listAdapter = new HomeListAdapter();
+                //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
+                if (jokesDataList!=null) {
                     homeList.setAdapter(listAdapter);
+                }
+
+            }else{
+                //加载了更多数据的时候，重新创建Json数据对象
+                ArrayList<Result.Data> moreJokesData=fromJson.getResult().getData();
+                //追加到第一个数据集合中，进行合并
+                jokesDataList.addAll(moreJokesData);
+                //刷新ListView
+                listAdapter.notifyDataSetChanged();
             }
     }
     //填充ListView的适配器。

@@ -23,6 +23,14 @@ public class MyListView extends ListView implements AbsListView.OnScrollListener
     private int lastItem;
     //上拉加载中避免重复加载的标记
     private boolean isLoadMore;
+    //下拉刷新状态
+    private static final int STATE_PULL_TO_REFRESH=1;
+    //松开刷新的状态
+    private static final int STATE_RELEASE_TO_REFRESH=2;
+    //正在刷新的状态
+    private static final int STATE_REFRESH=3;
+    //当前状态
+    private int mCurrentState=STATE_PULL_TO_REFRESH;
      /**
       * 构造函数最好三个都写上，说不定会用得上。
       * */
