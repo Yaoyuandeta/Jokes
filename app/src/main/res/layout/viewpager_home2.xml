@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.example.tangyi.jokes.Tools.MyListView
-            android:id="@+id/image_list"
+            android:id="@+id/two_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="#e66f6f"

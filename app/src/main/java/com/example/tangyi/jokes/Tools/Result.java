@@ -30,19 +30,8 @@ public class Result {
             return updatetime;
         }
 
-        @Override
-        public String toString() {
-            return "Data{" +
-                    "content='" + content + '\'' +
-                    ", updatetime='" + updatetime + '\'' +
-                    '}';
-        }
+
     }
 
-    @Override
-    public String toString() {
-        return "Result{" +
-                "data=" + data +
-                '}';
-    }
+
 }

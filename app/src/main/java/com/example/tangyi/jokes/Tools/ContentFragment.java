@@ -2,26 +2,22 @@ package com.example.tangyi.jokes.Tools;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tangyi.jokes.MainActivity;
 import com.example.tangyi.jokes.R;
 import com.google.gson.Gson;
-import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -30,8 +26,6 @@ import com.lidroid.xutils.http.client.HttpRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import pl.droidsonroids.gif.GifImageView;
 
 /**
  * 侧边栏的Fragment
@@ -49,25 +43,30 @@ public class ContentFragment extends Fragment {
     //主页底栏下的RadioGroup。
     private RadioGroup rg;
     //主页的文字ListView;
-    private MyListView homeList;
-    //主页的图片ListView
-    private MyListView imageList;
+    private MyListView  textList;
+    //附页的ListView
+    private MyListView twoTextList;
     //Json数据对象
     private ArrayList<Result.Data> jokesDataList;
-    //Json图片数据对象
-    private ArrayList<Result2.Image> imageDataList;
+    private ArrayList<Result2.Data> twoJokesDataList;
     //ListView适配器
-    private HomeListAdapter listAdapter;
-    //ListView图片适配器
-    private PhotoListAdapter photoAdapter;
+    private TextListAdapter listAdapter;
+    //ListView附页适配器
+    private TwoListAdapter twoListAdapter;
     //声明文字页下拉刷新控件
     private SwipeRefreshLayout swipeLayout;
-    //声明图片页下拉刷新控件
-    private SwipeRefreshLayout photoSwipe;
+    //声明附页下拉刷新控件
+    private SwipeRefreshLayout twoSwipe;
     //API page页数字段值
     private int page=2;
+    private int page2=2;
     private Result.Data data;
+    private Result2.Data data2;
+    private TimeStamp timeStamp=new TimeStamp();
+    private String s;
+    private String s1;
 
+    //  private View
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.fragment_content,null);
@@ -88,6 +87,7 @@ public class ContentFragment extends Fragment {
      */
     private void getMoreDataFromServer(){
         HttpUtils utils=new HttpUtils();
+        //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
         utils.send(HttpRequest.HttpMethod.GET,URLList.CATEGORY_URL1+page+URLList.CATEGORY_URL2,
                     new RequestCallBack<String>() {
 
@@ -109,7 +109,32 @@ public class ContentFragment extends Fragment {
 
                     });
 
+    }
+    private void getMoreTwoFromServer(){
+        s1 = timeStamp.getTimeStamp(8);
+        HttpUtils utils=new HttpUtils();
         //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
+        utils.send(HttpRequest.HttpMethod.GET,URLList.TWO_CATEGORY_URL1+page2+URLList.TWO_CATEGORY_URL2+s1
+                , new RequestCallBack<String>() {
+
+                    //请求成功
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result=responseInfo.result;
+                        processTwoData(result,true);
+                    }
+
+                    //请求失败
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
+                    }
+
+
+
+                });
+        Log.d("TAG","time2:"+ s1);
 
     }
     //此函数用于设置RadioButton的自定义图片的大小
@@ -140,36 +165,6 @@ public class ContentFragment extends Fragment {
         view2=layoutInflater.inflate(R.layout.viewpager_home2,null);
         //实例化文字页SwipeRefreshLayout.(Google官方下拉刷新控件)
         swipeLayout=(SwipeRefreshLayout)view1.findViewById(R.id.swiperefresh_layout);
-        //ListView在View1的布局文件中，就必须在该布局文件中寻找Id并实例化，否则会空指针异常。
-        homeList=(MyListView)view1.findViewById(R.id.home_list);
-        homeList.setOnRefreshListener(new MyListView.OnRefreshListener() {
-            @Override
-            public void onLoadMore() {
-
-                    getMoreDataFromServer();
-                //getDataFromServer();
-                if (data!=null) {
-                    page++;
-                }else{
-                    page=2;
-                    Toast.makeText(getContext(),"没有更多数据！",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        //图片List实例化
-        imageList=(MyListView)view2.findViewById(R.id.image_list);
-        //图片页下拉刷新
-        photoSwipe=(SwipeRefreshLayout)view2.findViewById(R.id.swiperefresh_layout2);
-        photoSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getDataFromImageServer();
-                photoSwipe.setRefreshing(false);
-            }
-        });
-        photoSwipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
-                android.R.color.holo_orange_light, android.R.color.holo_red_light);
         //下拉监听器，刷新回调函数（一般用于更新UI）
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -186,6 +181,47 @@ public class ContentFragment extends Fragment {
         swipeLayout.setDistanceToTriggerSync(200);
         //设置刷新控件的大小，这是默认选项。
         swipeLayout.setSize(SwipeRefreshLayout.DEFAULT);
+        //ListView在View1的布局文件中，就必须在该布局文件中寻找Id并实例化，否则会空指针异常。
+        textList=(MyListView)view1.findViewById(R.id.home_list);
+        textList.setOnRefreshListener(new MyListView.OnRefreshListener() {
+            @Override
+            public void onLoadMore() {
+                getMoreDataFromServer();
+                if (data!=null) {
+                    page++;
+                }else{
+                    page=2;
+                    Toast.makeText(getContext(),"没有更多数据！",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        //附页List实例化
+        twoTextList=(MyListView)view2.findViewById(R.id.two_list);
+        twoTextList.setOnRefreshListener(new MyListView.OnRefreshListener() {
+            @Override
+            public void onLoadMore() {
+                getMoreTwoFromServer();
+                if (data2!=null) {
+                    page2++;
+                }else{
+                    page2=2;
+                    Toast.makeText(getContext(),"没有更多数据！",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        //附页下拉刷新
+        twoSwipe=(SwipeRefreshLayout)view2.findViewById(R.id.swiperefresh_layout2);
+        twoSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getDataFromTwoServer();
+               twoSwipe.setRefreshing(false);
+            }
+        });
+        twoSwipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+
         list=new ArrayList<>();
         list.add(view1);
         list.add(view2);
@@ -237,25 +273,22 @@ public class ContentFragment extends Fragment {
         });
         //初始化文字信息方法
         getDataFromServer();
-        getDataFromImageServer();
+        getDataFromTwoServer();
     }
 
     //利用xUtils框架请求数据。
     private void getDataFromServer(){
         HttpUtils utils=new HttpUtils();
         //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
-        utils.send(HttpRequest.HttpMethod.GET, URLList.CATEGORY_URL1+1+URLList.CATEGORY_URL2,
+        utils.send(HttpRequest.HttpMethod.GET,URLList.CATEGORY_URL1+1+URLList.CATEGORY_URL2,
                 //请求的是什么内容，泛型就写入相对应的数据类型。
                 new RequestCallBack<String>() {
-
-
                     //请求成功
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result=responseInfo.result;
                         processData(result,false);
                     }
-
                     //请求失败
                     @Override
                     public void onFailure(HttpException e, String s) {
@@ -286,10 +319,10 @@ public class ContentFragment extends Fragment {
                 //定义Json数据对象。
                 jokesDataList = fromJson.getResult().getData();
 
-                listAdapter = new HomeListAdapter();
+                listAdapter = new TextListAdapter();
                 //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
                 if (jokesDataList!=null) {
-                    homeList.setAdapter(listAdapter);
+                    textList.setAdapter(listAdapter);
                 }
 
             }else{
@@ -301,23 +334,24 @@ public class ContentFragment extends Fragment {
                 listAdapter.notifyDataSetChanged();
             }
     }
+
     //填充ListView的适配器。
-    public class HomeListAdapter extends BaseAdapter {
+    public class TextListAdapter extends BaseAdapter {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
+             ViewHolder viewHolder;
             if (convertView==null){
                 convertView=View.inflate(getActivity(),R.layout.joke_list_item,null);
-                holder=new ViewHolder();
-                holder.contentText=(TextView)convertView.findViewById(R.id.content_text);
-                holder.timerText=(TextView)convertView.findViewById(R.id.timer_text);
-                convertView.setTag(holder);
+                viewHolder=new ViewHolder();
+                viewHolder.contentText=(TextView)convertView.findViewById(R.id.content_text);
+                viewHolder.timerText=(TextView)convertView.findViewById(R.id.timer_text);
+                convertView.setTag(viewHolder);
             }else {
-                holder=(ViewHolder)convertView.getTag();
+                viewHolder=(ViewHolder)convertView.getTag();
             }
             data = (Result.Data)getItem(position);
-            holder.contentText.setText("        "+ data.getContent());
-            holder.timerText.setText("更新时间："+ data.getUpdatetime());
+            viewHolder.contentText.setText("        "+ data.getContent());
+            viewHolder.timerText.setText("更新时间："+ data.getUpdatetime());
             return convertView;
         }
         @Override
@@ -332,16 +366,16 @@ public class ContentFragment extends Fragment {
         public int getCount() {
             return jokesDataList.size();
         }
-        class ViewHolder{
-            public TextView contentText;
-            public TextView timerText;
-        }
-    }
 
-    private void getDataFromImageServer(){
+    }
+    //请求附页数据
+    private void getDataFromTwoServer(){
+
         HttpUtils utils=new HttpUtils();
+        s = timeStamp.getTimeStamp(8);
         //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
-        utils.send(HttpRequest.HttpMethod.GET, URLList.IMAGECATEGORY_URL,
+        utils.send(HttpRequest.HttpMethod.GET,URLList.TWO_CATEGORY_URL1+1+URLList.TWO_CATEGORY_URL2+s
+                ,
                 //请求的是什么内容，泛型就写入相对应的数据类型。
                 new RequestCallBack<String>() {
                     //请求失败
@@ -355,56 +389,55 @@ public class ContentFragment extends Fragment {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result=responseInfo.result;
-                        //processImageData(result);
+                        processTwoData(result,false);
                     }
                 });
+        Log.d("TAG","time:"+ s);
     }
-    private void processImageData(String json){
+    private void processTwoData(String json,boolean isMore){
         Gson gson = new Gson();
         /**
          * gson.fromJson()函数意思是将Json数据转换为JAVA对象。
          * Json数据中字段对应的内容就是JAVA对象中字段内所存储的内容。
          */
-        JsonImageBean imageJson = gson.fromJson(json, JsonImageBean.class);
-        //定义Json数据对象。
-        imageDataList =imageJson.getResult().getData();
-        photoAdapter = new PhotoListAdapter();
-        //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
-        if (imageDataList!=null) {
-            imageList.setAdapter(photoAdapter);
-        }
-        Log.d("TAG","imageJson"+imageJson);
+        TwoJsonBean fromJson = gson.fromJson(json, TwoJsonBean.class);
+
+            if (!isMore) {
+                //定义Json数据对象。
+                twoJokesDataList = fromJson.getResult().getData();
+                twoListAdapter = new TwoListAdapter();
+
+                //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
+                if (twoJokesDataList != null) {
+                    twoTextList.setAdapter(twoListAdapter);
+                }
+            }else {
+                //加载了更多数据的时候，重新创建Json数据对象
+                ArrayList<Result2.Data> moreTwoData=fromJson.getResult().getData();
+                //追加到第一个数据集合中，进行合并
+                twoJokesDataList.addAll(moreTwoData);
+                //刷新ListView
+                twoListAdapter.notifyDataSetChanged();
+            }
+
     }
-    public class PhotoListAdapter extends BaseAdapter {
-        //Xuitls框架里的用于填充图片的方法类
-        private BitmapUtils mBitmapUtils;
-        public PhotoListAdapter(){
-            //在适配器的构造函数中新建BitmapUtils类，构造函数中传入所依附的Activity
-            mBitmapUtils=new BitmapUtils(getActivity());
-        }
+    public class TwoListAdapter extends BaseAdapter {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
             if (convertView==null){
-                convertView=View.inflate(getActivity(),R.layout.photo_list_item,null);
+                convertView=View.inflate(getActivity(),R.layout.jokes_list_item,null);
                 holder=new ViewHolder();
-                holder.contentText=(TextView)convertView.findViewById(R.id.photo_content_text);
-                holder.gifImage=(GifImageView)convertView.findViewById(R.id.url_gifimg);
+                holder.contentText=(TextView)convertView.findViewById(R.id.two_content_text);
+                holder.timerText=(TextView)convertView.findViewById(R.id.two_timer_text);
                 convertView.setTag(holder);
             }else {
                 holder=(ViewHolder)convertView.getTag();
             }
-            Result2.Image image=(Result2.Image)getItem(position);
-            holder.contentText.setText(image.getContent());
-            //通过”趣图“的Json对象的getUrl()函数可以得到图片链接的Url，赋值给imgUrl.
-            String imgUrl=image.getUrl();
-            /**
-             *  图片填充机制为下载图片—将图片设置给ImageView。
-             *  BitmapUtils的display()方法传入需要填充的ImageView和图片的下载链接
-             *  BitmapUtils底层封装好了这两步，只需将两个参数传入即可完成填充。
-             */
+            data2 = (Result2.Data)getItem(position);
+            holder.contentText.setText("        "+ data2.getContent());
+            holder.timerText.setText("更新时间："+ data2.getUpdatetime());
 
-            mBitmapUtils.display(holder.gifImage,imgUrl);
             return convertView;
         }
         @Override
@@ -413,16 +446,13 @@ public class ContentFragment extends Fragment {
         }
         @Override
         public Object getItem(int position) {
-            return imageDataList.get(position);
+            return twoJokesDataList.get(position);
         }
         @Override
         public int getCount() {
-            return imageDataList.size();
+            return twoJokesDataList.size();
         }
-        class ViewHolder{
-            public TextView contentText;
-            public GifImageView gifImage;
-        }
+
     }
 }
 

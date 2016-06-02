@@ -8,43 +8,30 @@ import java.util.ArrayList;
  * Created by 在阳光下唱歌 on 2016/5/24.
  */
 public class Result2 {
-    private ArrayList<Image> data;
-    public void setData(ArrayList<Image> data) {
-        this.data = data;
+    private ArrayList<Data> data;
+    public void  setData(ArrayList<Data> data){
+        this.data=data;
     }
-
-    @Override
-    public String toString() {
-        return "Result2{" +
-                "data=" + data +
-                '}';
-    }
-
-    public ArrayList<Image> getData() {
+    public ArrayList<Data> getData(){
         return data;
     }
-    public class Image{
+
+    public class Data{
         private String content;
-        private String url;
-        public void setContent(String content) {
-            this.content = content;
+        private String updatetime;
+        public void setContent(String content){
+            this.content=content;
         }
-        public void setUrl(String url) {
-            this.url = url;
-        }
-        public String getContent() {
+        public String getContent(){
             return content;
         }
-        public String getUrl() {
-            return url;
+        public void setUpdatetime(String updatetime){
+            this.updatetime=updatetime;
+        }
+        public String getUpdatetime(){
+            return updatetime;
         }
 
-        @Override
-        public String toString() {
-            return "Image{" +
-                    "content='" + content + '\'' +
-                    ", url='" + url + '\'' +
-                    '}';
-        }
+
     }
 }

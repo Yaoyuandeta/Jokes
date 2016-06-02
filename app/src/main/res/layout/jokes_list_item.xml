@@ -4,14 +4,17 @@
     android:layout_height="match_parent">
     <!--自定义ListView的布局文件-->
     <TextView
-        android:id="@+id/photo_content_text"
+        android:id="@+id/two_content_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#000"
-        android:gravity="center"
-        android:textSize="15sp"/>
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/url_gifimg"
+        android:textSize="20sp"/>
+    <TextView
+        android:id="@+id/two_timer_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textColor="#500000"/>
 </LinearLayout>

@@ -7,5 +7,29 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+  <!--  <style name="Widget_GifView">
+    <declare-styleable name="GifView">
+        <attr name="gif" format="reference" />
+        <attr name="paused" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="CustomTheme">
+        <attr name="gifViewStyle" format="reference" />
+    </declare-styleable>
+    </style>-->
+
+
+        <declare-styleable name="gifCommon">
+            <attr name="gif_src" format="reference" />
+            <attr name="decode_stream" format="boolean" />
+            <attr name="default_animation_time" format="integer" />
+        </declare-styleable>
+
+    <declare-styleable name="GifView">
+        <attr name="gif" format="reference" />
+        <attr name="paused" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="CustomTheme">
+        <attr name="gifViewStyle" format="reference" />
+    </declare-styleable>
 
 </resources>
