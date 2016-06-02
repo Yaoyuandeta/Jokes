@@ -10,11 +10,19 @@
     <include layout="@layout/content_activity"/>
   </LinearLayout>
 
-      <fragment
-          android:id="@+id/drawer_fragment"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_gravity="left"
-          android:name="com.example.tangyi.jokes.Tools.MyFragment"/>
+    <ScrollView
+        android:id="@+id/drawer_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start">
+        <fragment
+            android:id="@+id/drawer_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:name="com.example.tangyi.jokes.Tools.MyFragment"/>
+    </ScrollView>
+
+
 
 </android.support.v4.widget.DrawerLayout>

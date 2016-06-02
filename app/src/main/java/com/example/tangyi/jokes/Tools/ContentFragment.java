@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.tangyi.jokes.R;
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -73,7 +75,6 @@ public class ContentFragment extends Fragment {
         homeViewPager=(HomeViewPager)view.findViewById(R.id.viewpager_home);
         rg=(RadioGroup)view.findViewById(R.id.radio_main);
 
-
         //初始化ViewPager的函数。
         initViewPagerData();
         initView();
@@ -112,29 +113,34 @@ public class ContentFragment extends Fragment {
     }
     private void getMoreTwoFromServer(){
         s1 = timeStamp.getTimeStamp(8);
-        HttpUtils utils=new HttpUtils();
-        //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
-        utils.send(HttpRequest.HttpMethod.GET,URLList.TWO_CATEGORY_URL1+page2+URLList.TWO_CATEGORY_URL2+s1
-                , new RequestCallBack<String>() {
+        if (s1!=null){
+            HttpUtils utils=new HttpUtils();
+            if (s1!=null){
+                //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
+                utils.send(HttpRequest.HttpMethod.GET,URLList.TWO_CATEGORY_URL1+page2+URLList.TWO_CATEGORY_URL2+s1
+                        , new RequestCallBack<String>() {
 
-                    //请求成功
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String result=responseInfo.result;
-                        processTwoData(result,true);
-                    }
+                            //请求成功
+                            @Override
+                            public void onSuccess(ResponseInfo<String> responseInfo) {
+                                String result=responseInfo.result;
+                                processTwoData(result,true);
+                            }
 
-                    //请求失败
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        e.printStackTrace();
-                        Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
-                    }
+                            //请求失败
+                            @Override
+                            public void onFailure(HttpException e, String s) {
+                                e.printStackTrace();
+                                Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
+                            }
 
 
 
-                });
-        Log.d("TAG","time2:"+ s1);
+                        });
+            }
+        }
+
+
 
     }
     //此函数用于设置RadioButton的自定义图片的大小
@@ -264,6 +270,7 @@ public class ContentFragment extends Fragment {
                     //“趣图”页面
                     case R.id.radio_button2:
                         homeViewPager.setCurrentItem(1,false);
+                        getDataFromTwoServer();
                         break;
                     default:
                         break;
@@ -271,9 +278,10 @@ public class ContentFragment extends Fragment {
 
             }
         });
+
         //初始化文字信息方法
-        getDataFromServer();
-        getDataFromTwoServer();
+       getDataFromServer();
+       //getDataFromTwoServer();
     }
 
     //利用xUtils框架请求数据。
@@ -297,6 +305,7 @@ public class ContentFragment extends Fragment {
                     }
 
                 });
+
     }
     /**
      * processData()函数用于解析Json数据
@@ -370,29 +379,29 @@ public class ContentFragment extends Fragment {
     }
     //请求附页数据
     private void getDataFromTwoServer(){
-
-        HttpUtils utils=new HttpUtils();
         s = timeStamp.getTimeStamp(8);
-        //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
-        utils.send(HttpRequest.HttpMethod.GET,URLList.TWO_CATEGORY_URL1+1+URLList.TWO_CATEGORY_URL2+s
-                ,
-                //请求的是什么内容，泛型就写入相对应的数据类型。
-                new RequestCallBack<String>() {
-                    //请求失败
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        e.printStackTrace();
-                        Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
-                    }
+        HttpUtils utils = new HttpUtils();
+            //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
+            utils.send(HttpRequest.HttpMethod.GET, URLList.TWO_CATEGORY_URL1+1+URLList.TWO_CATEGORY_URL2+s
+                    //请求的是什么内容，泛型就写入相对应的数据类型。
+                    ,new RequestCallBack<String>() {
+                        //请求失败
+                        @Override
+                        public void onFailure(HttpException e, String s) {
+                            e.printStackTrace();
+                            Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+                        }
 
-                    //请求成功
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String result=responseInfo.result;
-                        processTwoData(result,false);
-                    }
-                });
-        Log.d("TAG","time:"+ s);
+                        //请求成功
+                        @Override
+                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                            String result = responseInfo.result;
+                            processTwoData(result, false);
+                        }
+                    });
+        Log.d("TAG",s);
+
+
     }
     private void processTwoData(String json,boolean isMore){
         Gson gson = new Gson();

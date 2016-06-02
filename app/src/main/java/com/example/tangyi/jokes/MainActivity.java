@@ -7,10 +7,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.example.tangyi.jokes.Tools.ContentFragment;
-import com.example.tangyi.jokes.Tools.MyFragment;
 
 
 /**
@@ -18,8 +18,7 @@ import com.example.tangyi.jokes.Tools.MyFragment;
  */
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
-    private View view;
-    private Boolean bl;
+    private ScrollView mScrollView;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -28,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
         //初始化数据
         initFragment();
         initSettingLayout();
-
-
+        drawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
+        mScrollView=(ScrollView)findViewById(R.id.drawer_scroll);
     }
     private void initFragment(){
 
@@ -43,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
         //禁用DrawerLayout的滑动
     }
     public void stClick(View v){
-        Toast.makeText(MainActivity.this,"onClick执行", Toast.LENGTH_SHORT).show();
+        if (drawerLayout != null && mScrollView != null){
+            drawerLayout.openDrawer(mScrollView);
+        }
     }
     private void initSettingLayout(){
     }
