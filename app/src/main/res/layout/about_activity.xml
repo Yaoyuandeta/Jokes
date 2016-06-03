@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/about_version"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:src="@mipmap/ic_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:text="当前版本1.0"
+            android:textSize="30sp"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/about_text"
+        android:layout_below="@id/about_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:text="        本应用为个人学习总结知识点项目。UI方面自主编写，有点丑。本人技术有限且还在学习阶段，功能和代码优化上都做不到商业项目那么好，还望多多理解。很遗憾当前版本只支持文字类的笑话更新，之前有考虑加入动图，苦于没有找到合适的动画效果解决方案，只得暂时搁浅。目前来看，很多地方有待完善，后续可能会加入动图显示，也有可能不再更新，故未加入版本检测更新功能。在此，非常感谢各位朋友的支持。有什么意见和建议请联系我。"/>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/about_text"
+        android:id="@+id/qq_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="10dp"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:text="QQ：358181251"
+        android:gravity="right"/>
+    <TextView
+        android:layout_below="@id/qq_text"
+        android:id="@+id/about_email"
+        android:layout_width="match_parent"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:text="E-mail：aCandy1993@163.com" />
+
+</RelativeLayout>

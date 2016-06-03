@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/setting_back"
     android:id="@+id/setting_layout">
-    <View
+  <!--  <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#ffffff"/>
@@ -55,9 +55,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ffffff"/>
+        android:background="#ffffff"/>-->
     <LinearLayout
-        android:id="@+id/aboutLayout_img"
+        android:id="@+id/about_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
