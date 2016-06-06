@@ -27,7 +27,7 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_splash);
 
         AdManager.getInstance(this).
-                init(APP_ID, APP_SECRET,true);
+                init(APP_ID, APP_SECRET,false);
         splashLayout=(RelativeLayout)findViewById(R.id.splash_layout);
         initAnimation();
     }
