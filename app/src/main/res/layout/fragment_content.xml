@@ -5,11 +5,18 @@
     android:background="@drawable/main_back">
     <include
         android:id="@+id/home_title" layout="@layout/title_bar"/>
+
     <com.example.tangyi.jokes.Tools.HomeViewPager
         android:id="@+id/viewpager_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
+    <LinearLayout
+        android:id="@+id/adLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    </LinearLayout>
     <RadioGroup
         android:id="@+id/radio_main"
         android:layout_width="match_parent"

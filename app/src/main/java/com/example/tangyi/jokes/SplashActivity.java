@@ -10,17 +10,24 @@ import android.widget.RelativeLayout;
 
 import com.example.tangyi.jokes.Tools.SharedPreferencesUtils;
 
+import net.youmi.android.AdManager;
+
+
 /**
  * 启动页Activity
  * Created by 在阳光下唱歌 on 2016/5/9.
  */
 public class SplashActivity extends Activity {
+    private static final String APP_ID="7e8c74720c9fee12";
+    private static final String APP_SECRET="4db7b7071fb84b9d";
     private RelativeLayout splashLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        AdManager.getInstance(this).
+                init(APP_ID, APP_SECRET,true);
         splashLayout=(RelativeLayout)findViewById(R.id.splash_layout);
         initAnimation();
     }

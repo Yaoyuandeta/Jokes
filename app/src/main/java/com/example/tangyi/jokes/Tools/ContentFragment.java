@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -25,6 +26,10 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
+
+
+import net.youmi.android.banner.AdSize;
+import net.youmi.android.banner.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +79,10 @@ public class ContentFragment extends Fragment {
         view=inflater.inflate(R.layout.fragment_content,null);
         homeViewPager=(HomeViewPager)view.findViewById(R.id.viewpager_home);
         rg=(RadioGroup)view.findViewById(R.id.radio_main);
+
+        AdView adView=new AdView(getActivity(), AdSize.FIT_SCREEN);
+        LinearLayout adLayout=(LinearLayout)view.findViewById(R.id.adLayout);
+        adLayout.addView(adView);
 
         //初始化ViewPager的函数。
         initViewPagerData();
@@ -148,6 +157,8 @@ public class ContentFragment extends Fragment {
         radioGroup = (RadioGroup)view.findViewById(R.id.radio_main);
         radioButton1 = (RadioButton)view.findViewById(R.id.radio_button1);
         radioButton2 = (RadioButton)view.findViewById(R.id.radio_button2);
+
+
 
         //定义底部标签图片大小
         Drawable jokeDrawable=getResources().getDrawable(R.drawable.tab_joke_selector,null);

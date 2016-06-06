@@ -4,6 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0">
 <!--versionCode表示表示版本代码，是整型数字，versionName表示版本名称，是字符串-->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo"
@@ -22,8 +23,36 @@
                   android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".AboutActivity"/>
+
+
+        <activity
+            android:name="net.youmi.android.AdBrowser"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity >
+        <service
+            android:name="net.youmi.android.AdService"
+            android:exported="false" >
+        </service >
+        <receiver android:name="net.youmi.android.AdReceiver" >
+            <intent-filter >
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_INSTALL" />
+
+                <data android:scheme="package" />
+            </intent-filter >
+        </receiver >
+
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="23" />
+
 
 </manifest>
