@@ -17,6 +17,7 @@ import com.example.tangyi.jokes.Tools.ContentFragment;
  *
  */
 public class MainActivity extends AppCompatActivity {
+    //主页面的侧滑控件（Google官方控件）
     private DrawerLayout drawerLayout;
     private ScrollView mScrollView;
     @Override
@@ -48,6 +49,4 @@ public class MainActivity extends AppCompatActivity {
     }
     private void initSettingLayout(){
     }
-
-
 }

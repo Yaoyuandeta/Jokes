@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--引导页的布局文件-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/guide_back">
+    <!--装载引导页的ViewPager-->
     <android.support.v4.view.ViewPager
         android:id="@+id/guide_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </android.support.v4.view.ViewPager>
+    <!--包含小圆点的RelativeLayout，因为父布局是相对布局，所以ViewPager能和这个相对布局同时出现在屏幕中而不会被挤出屏幕-->
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp">
+        <!--将三个灰色小圆点置于线性布局中-->
         <LinearLayout
             android:id="@+id/pointgray_layout"
             android:layout_width="wrap_content"
@@ -36,6 +40,7 @@
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/shape_point_gray"/>
         </LinearLayout>
+        <!--红色小圆点与线性布局平级，达到覆盖灰色小圆点的目的-->
         <ImageView
             android:id="@+id/point_red"
             android:layout_width="wrap_content"

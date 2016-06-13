@@ -38,7 +38,9 @@ import java.util.List;
  * 侧边栏的Fragment
  */
 public class ContentFragment extends Fragment {
+    //装载Fragment的View
     private View view;
+    //主页面的RadioGroup和RadioButton
     private RadioGroup radioGroup;
     private RadioButton radioButton1,radioButton2;
     //主页上的ViewPager;
@@ -73,7 +75,6 @@ public class ContentFragment extends Fragment {
     private String s;
     private String s1;
 
-    //  private View
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.fragment_content,null);
@@ -200,6 +201,7 @@ public class ContentFragment extends Fragment {
         swipeLayout.setSize(SwipeRefreshLayout.DEFAULT);
         //ListView在View1的布局文件中，就必须在该布局文件中寻找Id并实例化，否则会空指针异常。
         textList=(MyListView)view1.findViewById(R.id.home_list);
+        //上拉加载监听
         textList.setOnRefreshListener(new MyListView.OnRefreshListener() {
             @Override
             public void onLoadMore() {

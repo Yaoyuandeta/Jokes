@@ -44,11 +44,16 @@ public class MyListView extends ListView implements AbsListView.OnScrollListener
       * 初始化尾布局
       */
      private void initFooterView(){
+
+         //实例化尾布局，尾布局是自定义的listview_down文件
          mFooterView = View.inflate(getContext(), R.layout.listview_down,null);
+         //将尾布局追加到ListView中
          this.addFooterView(mFooterView);
+         //调用尾布局的measure()函数进行测量
          mFooterView.measure(0,0);
+         //测量完毕后再调用getMeasuredHeight()获取测量到的高度，并赋值给mHeaderViewHeight
          mFooterViewHeight = mFooterView.getMeasuredHeight();
-         //默认将尾布局隐藏
+         //用setPadding()进行设置隐藏，四个参数依次是左，上，右，下。
          mFooterView.setPadding(0,-mFooterViewHeight,0,0);
          //设置滑动监听
          this.setOnScrollListener(this);
@@ -101,6 +106,4 @@ public class MyListView extends ListView implements AbsListView.OnScrollListener
     public void setOnRefreshListener(OnRefreshListener listener){
         mListener=listener;
     }
-
-
- }
+}

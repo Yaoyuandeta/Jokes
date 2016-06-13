@@ -26,8 +26,10 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        //初始化广告
         AdManager.getInstance(this).
                 init(APP_ID, APP_SECRET,false);
+        //实例化布局
         splashLayout=(RelativeLayout)findViewById(R.id.splash_layout);
         initAnimation();
     }
@@ -35,7 +37,9 @@ public class SplashActivity extends Activity {
     private void initAnimation(){
         Animation animation= AnimationUtils.loadAnimation(SplashActivity.this,R.anim.alpha_scale);
         animation.setFillAfter(true);
+        //给布局添加动画效果，也就是给启动页添加动画效果
         splashLayout.startAnimation(animation);
+        //给动画设置监听器，当动画展示完毕后就进行判断。
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {

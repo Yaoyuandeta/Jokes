@@ -25,9 +25,13 @@ import java.util.List;
  */
 //初次进入的引导页界面。
 public class GuideActivity extends Activity {
+    //第三个引导页上“进入应用”按钮
     private Button guideButton;
+    //装载三个引导页面的ViewPager
     private ViewPager guideViewPager;
+    //三个引导页面
     private View view1,view2,view3;
+    //存储View对象的List集合
     private List<View> list;
     //含有三个小灰点的LinearLayout。
     private LinearLayout pointGrayLayout;
@@ -39,15 +43,18 @@ public class GuideActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide);
+        //实例化ViewPager
         guideViewPager=(ViewPager)findViewById(R.id.guide_viewpager);
         //小红点
         pointRed=(ImageView)findViewById(R.id.point_red);
+        //初始化数据方法
         initData();
 
         //设置ViewPager的滑动监听。
         guideViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
-            /**页面滑动过程中的回调。参数分别为：当前位置(从0开始，比如第一个页面是0，第二个页面上是1，以此类推。)
+            /**页面滑动过程中的回调。参数分别为：
+             * 当前位置(从0开始，比如第一个页面是0，第二个页面上是1，以此类推。)
              * 第二个参数为移动的偏移量，以百分比为单位。需要注意的是，当第一个页面偏移到第二个页面上时，百分比不会为100，而是重置为0.
              * 第三个参数为具体的偏移量，单位不详，貌似是dp。在这里这个参数不重要。
              */
@@ -80,7 +87,7 @@ public class GuideActivity extends Activity {
 
             }
         });
-        //包含有三个小灰点的线性布局。
+        //包含有三个灰色小圆点的线性布局。
         pointGrayLayout=(LinearLayout)findViewById(R.id.pointgray_layout);
 
         //暂不说明，需要了解的知识点。
@@ -104,15 +111,19 @@ public class GuideActivity extends Activity {
         guideButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //点击按钮后说明已经进入应用，下次进入时便不再需要展示引导页，所以改为false
                 SharedPreferencesUtils.setBoolean(GuideActivity.this,"is_first_enter",false);
+                //跳转到主页面
                 startActivity(new Intent(GuideActivity.this,MainActivity.class));
                 finish();
             }
         });
+        //list集合添加View对象
         list=new ArrayList<View>();
         list.add(view1);
         list.add(view2);
         list.add(view3);
+        //ViewPager设置适配器，用于装载引导页
         guideViewPager.setAdapter(new PagerAdapter() {
             //ViewPager要展示的页面个数。
             @Override
