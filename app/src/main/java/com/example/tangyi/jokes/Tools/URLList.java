@@ -12,4 +12,6 @@ public class URLList {
     public static final String TWO_CATEGORY_URL2="&pagesize=20&sort=desc&time=";
 
     public static final String IMAGE_URL="http://japi.juhe.cn/joke/img/text.from?key="+APPKEY+"&page=1&pagesize=20";
+
+    public static final String BATE_URL="http://japi.juhe.cn/joke/content/list.from?key="+APPKEY+"&page=2&pagesize=10&sort=asc&time=1418745237";
 }

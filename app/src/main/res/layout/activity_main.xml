@@ -4,14 +4,27 @@
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
     android:background="#fff">
+  <!--LinearLayout内为主页面，里面分别是一个帧布局和底部的Title的Fragment。在Activity中是动态添加的另外一个Fragment。-->
+  <!--所以这里的FrameLayout仅仅是作为占位使用，因为帧布局的性能消耗最低。-->
   <LinearLayout
       android:id="@+id/drawer_linear"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical">
-    <com.example.tangyi.jokes.Tools.ContentLayout
+    <include
+        android:id="@+id/home_layout"
+        layout="@layout/title_bar"/>
+    <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="9"/>
+    <fragment
+        android:id="@+id/title_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:name="com.example.tangyi.jokes.Fragment.TitleFragment"/>
   </LinearLayout>
   <LinearLayout
       android:id="@+id/drawer_fragment"
