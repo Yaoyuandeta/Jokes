@@ -17,7 +17,7 @@
         android:textColor="#fff"
         android:padding="5dp"
         android:textSize="20sp"
-        android:text="欢迎使用笑话大全(Jokes)，首先感谢您选择安装了这款APP，这是一款实时更新段子和小笑话的应用，它能够很好的打发时间，更重要的是它能在您心情低落时博君一笑，让你走出心理阴霾。"
+        android:text="欢迎使用笑话大全(Jokes)，感谢您选择安装了这款APP，这是本应用的1.1版本。此版本删除了广告，增加了趣图。"
         android:layout_below="@+id/bm_img"
         android:layout_centerHorizontal="true" />
 

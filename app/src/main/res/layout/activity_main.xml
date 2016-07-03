@@ -2,24 +2,27 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawer_layout">
+    android:id="@+id/drawer_layout"
+    android:background="#fff">
   <LinearLayout
       android:id="@+id/drawer_linear"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
-    <include layout="@layout/content_activity"/>
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+    <com.example.tangyi.jokes.Tools.ContentLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
   </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/drawer_scroll"
+  <LinearLayout
+      android:id="@+id/drawer_fragment"
+      android:layout_width="200dp"
+      android:layout_height="match_parent"
+      android:layout_gravity="left">
+    <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start">
-        <fragment
-            android:id="@+id/drawer_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:name="com.example.tangyi.jokes.Tools.MyFragment"/>
-    </ScrollView>
+        android:name="com.example.tangyi.jokes.Tools.MyFragment"/>
+  </LinearLayout>
+
+
 </android.support.v4.widget.DrawerLayout>

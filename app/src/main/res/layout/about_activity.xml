@@ -2,7 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <include
+        android:id="@+id/about_titlebar"
+        layout="@layout/title_bar"/>
     <LinearLayout
+        android:layout_marginTop="40dp"
+        android:layout_below="@id/about_titlebar"
         android:id="@+id/about_version"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -17,7 +22,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="#000000"
-            android:text="当前版本1.0"
+            android:text="当前版本1.1"
             android:textSize="30sp"
             android:layout_marginTop="10dp"/>
     </LinearLayout>
@@ -29,7 +34,7 @@
         android:padding="5dp"
         android:textSize="18sp"
         android:textColor="#000000"
-        android:text="        本应用为个人学习总结知识点项目。UI方面自主编写，有点丑。本人技术有限且还在学习阶段，功能和代码优化上都做不到商业项目那么好，还望多多理解。很遗憾当前版本只支持文字类的笑话更新，之前有考虑加入动图，苦于没有找到合适的动画效果解决方案，只得暂时搁浅。目前来看，很多地方有待完善，后续可能会加入动图显示，也有可能不再更新，故未加入版本检测更新功能。在此，非常感谢各位朋友的支持。有什么意见和建议请联系我。"/>
+        android:text="        版本已更新为1.1版，增加了动图展示，后期可能不再维护此应用。"/>
 
     <TextView
         android:layout_marginTop="20dp"

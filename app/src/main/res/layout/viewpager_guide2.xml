@@ -17,7 +17,7 @@
         android:padding="5dp"
         android:textColor="#fff"
         android:textSize="20sp"
-        android:text="此应用为本人总结所学知识点的完整实例。因本人技术有限，界面和性能的优化上都存在许多不足，在后续的版本中会陆续改进，望朋友们理解。"
+        android:text="此应用为本人总结所学知识点的完整实例。因技术有限，界面和性能的优化上都存在许多不足，在后续的版本中会陆续改进，望朋友们理解。"
         android:layout_below="@id/viewpager_guide2img"
         android:layout_centerHorizontal="true" />
 

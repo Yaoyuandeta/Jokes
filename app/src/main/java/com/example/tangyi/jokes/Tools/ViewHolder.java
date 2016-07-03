@@ -1,5 +1,6 @@
 package com.example.tangyi.jokes.Tools;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -8,4 +9,5 @@ import android.widget.TextView;
 public class ViewHolder {
     public TextView contentText;
     public TextView timerText;
+    public ImageView imageView;
 }
