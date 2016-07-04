@@ -1,4 +1,4 @@
-package com.example.tangyi.jokes.Tools;
+package com.example.tangyi.jokes.Bean;
 
 import org.json.JSONObject;
 

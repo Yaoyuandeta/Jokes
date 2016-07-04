@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * 侧边栏的Fragment
  */
-public class ContentLayout extends LinearLayout implements ViewPager.OnPageChangeListener{
+public class ContentLayout extends LinearLayout {
     private static final String[] TITLE=new String[]{"最新","段子","趣图","随机"};
     private TabPageIndicator mIndicator;
     //装载Fragment的View
@@ -71,88 +71,8 @@ public class ContentLayout extends LinearLayout implements ViewPager.OnPageChang
 
 
 
-    /**
-     * 当加载更多数据时，就调用此方法
-     * 请求成功后，在onSuccess()方法中调用processData()方法进行数据解析时，第二个参数传入的是true
-     * 就会执行该方法中if语句中的else语句。
-     */
-    private void getMoreDataFromServer(){
-        HttpUtils utils=new HttpUtils();
-        switch (viewPager.getCurrentItem()) {
-            case 0:
-            //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
-            utils.send(HttpRequest.HttpMethod.GET, URLList.CATEGORY_URL1 + page + URLList.CATEGORY_URL2,
-                    new RequestCallBack<String>() {
-
-                        //请求成功
-                        @Override
-                        public void onSuccess(ResponseInfo<String> responseInfo) {
-                            String result = responseInfo.result;
-                           // processData(result, true);
-                        }
-
-                        //请求失败
-                        @Override
-                        public void onFailure(HttpException e, String s) {
-                            e.printStackTrace();
-                        }
-
-
-                    });
-                break;
-            case 1:
-                if (s1!=null){
-                    //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
-                    utils.send(HttpRequest.HttpMethod.GET,URLList.TWO_CATEGORY_URL1+page2+URLList.TWO_CATEGORY_URL2+s1
-                            , new RequestCallBack<String>() {
-
-                                //请求成功
-                                @Override
-                                public void onSuccess(ResponseInfo<String> responseInfo) {
-                                    String result=responseInfo.result;
-                                  //  processData(result,true);
-                                }
-
-                                //请求失败
-                                @Override
-                                public void onFailure(HttpException e, String s) {
-                                    e.printStackTrace();
-                                }
 
 
 
-                            });
-                }
-                break;
-            default:
-                break;
-
-        }
-
-    }
-
-
-
-
-
-
-
-
-
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        //getDataFromServer();
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
 }
 

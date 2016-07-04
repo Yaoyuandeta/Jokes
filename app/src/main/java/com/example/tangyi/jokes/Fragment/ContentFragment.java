@@ -10,14 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.tangyi.jokes.Bean.APIStoreBean;
 import com.example.tangyi.jokes.R;
-import com.example.tangyi.jokes.Tools.JsonBean;
+import com.example.tangyi.jokes.Bean.JsonBean;
 import com.example.tangyi.jokes.Tools.MyListView;
 import com.example.tangyi.jokes.Tools.TimeStamp;
 import com.example.tangyi.jokes.Tools.URLList;
@@ -25,6 +23,7 @@ import com.example.tangyi.jokes.Tools.ViewHolder;
 import com.google.gson.Gson;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
@@ -38,21 +37,23 @@ import java.util.List;
  */
 public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         MyListView.OnRefreshListener,ViewPager.OnPageChangeListener {
-    private static final String[] TITLE=new String[]{"最新","随机"};
+    private static final String[] TITLE=new String[]{"段子","笑话","随机"};
     private TabPageIndicator mIndicator;
     private ViewPager mViewPager;
-    private View view1,view2;
+    private View view1,view2,view3;
     private List<View> list;
-    private SwipeRefreshLayout swipeLayout1,swipeLayout2;
-    private MyListView textList1,textList2;
-    private int page=2,page2=2;
+    private SwipeRefreshLayout swipeLayout1,swipeLayout2,swipeLayout3;
+    private MyListView textList1,textList2,textList3;
+    private int page=2,page2=2,page3=2;
     private String s,s1;
     //Json数据对象
     private ArrayList<JsonBean.Result.Data> jokesDataList;
     private JsonBean.Result.Data data;
-
+    private ArrayList<APIStoreBean.ShowApiResBody.Content> APIDataList;
+    private APIStoreBean.ShowApiResBody.Content APIData;
     //ListView适配器
     private ListAdapter listAdapter;
+    private APIStoreAdapter APIAdapter;
     private TimeStamp timeStamp=new TimeStamp();
 
     @Override
@@ -67,9 +68,11 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void initViewPager(){
         view1=LayoutInflater.from(getActivity()).inflate(R.layout.viewpager_home1,null);
         view2=LayoutInflater.from(getActivity()).inflate(R.layout.viewpager_home1,null);
+        view3=LayoutInflater.from(getActivity()).inflate(R.layout.viewpager_home1,null);
         list = new ArrayList<>();
         list.add(view1);
         list.add(view2);
+        list.add(view3);
         mViewPager.setAdapter(new PagerAdapter() {
             @Override
             public int getCount() {
@@ -120,14 +123,21 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
         textList2 =(MyListView) view2.findViewById(R.id.home_list);
         textList2.setOnRefreshListener(this);
 
+        swipeLayout3=(SwipeRefreshLayout) view3.findViewById(R.id.swiperefresh_layout);
+        swipeLayout3.setOnRefreshListener(this);
+        swipeLayout3.setColorSchemeResources(R.color.jokes_swipe_red);
+        swipeLayout3.setDistanceToTriggerSync(200);
+        textList3 =(MyListView) view3.findViewById(R.id.home_list);
+        textList3.setOnRefreshListener(this);
+
         //初始化ViewPager数据
-        getDataFromServer();
+        getDataFromServer(0);
     }
 
     //利用Xutils框架请求数据
-    private void getDataFromServer(){
+    private void getDataFromServer(int position){
         HttpUtils utils = new HttpUtils();
-        switch (mViewPager.getCurrentItem()) {
+        switch (position) {
             case 0:
                 //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
                 utils.send(HttpRequest.HttpMethod.GET, URLList.CATEGORY_URL1 + 1 + URLList.CATEGORY_URL2,
@@ -137,8 +147,7 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
                             @Override
                             public void onSuccess(ResponseInfo<String> responseInfo) {
                                 String result = responseInfo.result;
-                                processData(result, false);
-                                Log.d("TAG","result:"+result);
+                                processData(result, false,0);
                             }
 
                             //请求失败
@@ -150,25 +159,43 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
                         });
                 break;
             case 1:
-                s = timeStamp.getTimeStamp(8);
-                //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
-                utils.send(HttpRequest.HttpMethod.GET, URLList.BATE_URL
-                        //请求的是什么内容，泛型就写入相对应的数据类型。
+                RequestParams requestParams=new RequestParams();
+                requestParams.addHeader("apikey", URLList.APISTORE_KEY);
+                utils.send(HttpRequest.HttpMethod.GET, URLList.APISTORE_TEXT_URL+1,requestParams
                         ,new RequestCallBack<String>() {
+                            @Override
+                            public void onFailure(HttpException e, String s) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onSuccess(ResponseInfo<String> responseInfo) {
+                                s1=s;
+                                String result = responseInfo.result;
+                                processData(result, false,1);
+                            }
+                        });
+                break;
+            case 2:
+                s = timeStamp.getTimeStamp(8);
+                utils.send(HttpRequest.HttpMethod.GET, URLList.TWO_CATEGORY_URL1 + 1 + URLList.TWO_CATEGORY_URL2+s,
+                        //请求的是什么内容，泛型就写入相对应的数据类型。
+                        new RequestCallBack<String>() {
+                            //请求成功
+                            @Override
+                            public void onSuccess(ResponseInfo<String> responseInfo) {
+                                s1=s;
+                                String result = responseInfo.result;
+                                processData(result, false,2);
+
+                            }
+
                             //请求失败
                             @Override
                             public void onFailure(HttpException e, String s) {
                                 e.printStackTrace();
                             }
 
-                            //请求成功
-                            @Override
-                            public void onSuccess(ResponseInfo<String> responseInfo) {
-                                s1=s;
-                                String result = responseInfo.result;
-                                Log.d("TAG","result:"+result);
-                                //processData(result, false);
-                            }
                         });
                 break;
 
@@ -185,44 +212,107 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
      * 否则的话，也就是加载了更多的数据时，将更多数据的Json对象重新创建，并追加到原来的ListView中，进行合并
      */
 
-    private void processData(String json,boolean isMore){
+    private void processData(String json,boolean isMore,int position){
 
         Gson gson = new Gson();
         /**
          * gson.fromJson()函数意思是将Json数据转换为JAVA对象。
          * Json数据中字段对应的内容就是JAVA对象中字段内所存储的内容。
          */
-        JsonBean fromJson = gson.fromJson(json, JsonBean.class);
-
-        if (!isMore){
-            //定义Json数据对象。
-            jokesDataList = fromJson.getResult().getData();
-
-            listAdapter = new ListAdapter();
-            //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
-            if (jokesDataList!=null) {
-                switch (mViewPager.getCurrentItem()) {
-                    case 0:
+        switch (position) {
+            case 0:
+                JsonBean fromJson = gson.fromJson(json, JsonBean.class);
+                if (!isMore) {
+                    //定义Json数据对象。
+                    jokesDataList = fromJson.getResult().getData();
+                    listAdapter = new ListAdapter();
+                    //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
+                    if (jokesDataList != null) {
                         textList1.setAdapter(listAdapter);
-                        break;
-                    case 1:
-                        textList2.setAdapter(listAdapter);
-                        break;
-                    default:
-                        break;
+                    }
+                } else {
+                    //加载了更多数据的时候，重新创建Json数据对象
+                    ArrayList<JsonBean.Result.Data> moreJokesData = fromJson.getResult().getData();
+                    //追加到第一个数据集合中，进行合并
+                    jokesDataList.addAll(moreJokesData);
+                    //刷新ListView
+                    listAdapter.notifyDataSetChanged();
                 }
-            }
-
-        }else{
-            //加载了更多数据的时候，重新创建Json数据对象
-            ArrayList<JsonBean.Result.Data> moreJokesData=fromJson.getResult().getData();
-            //追加到第一个数据集合中，进行合并
-            jokesDataList.addAll(moreJokesData);
-            //刷新ListView
-            listAdapter.notifyDataSetChanged();
+                break;
+            case 1:
+                APIStoreBean APIJson = gson.fromJson(json, APIStoreBean.class);
+                if (!isMore) {
+                    APIDataList = APIJson.getShowapi_res_body().getContentlist();
+                    APIAdapter = new APIStoreAdapter();
+                    if (APIDataList != null) {
+                        textList2.setAdapter(APIAdapter);
+                    }
+                    } else {
+                        ArrayList<APIStoreBean.ShowApiResBody.Content> moreAPIData = APIJson.getShowapi_res_body().getContentlist();
+                        APIDataList.addAll(moreAPIData);
+                        APIAdapter.notifyDataSetChanged();
+                    }
+                break;
+            case 2:
+                JsonBean fromJson2 = gson.fromJson(json, JsonBean.class);
+                if (!isMore) {
+                    //定义Json数据对象。
+                    jokesDataList = fromJson2.getResult().getData();
+                    listAdapter = new ListAdapter();
+                    //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
+                    if (jokesDataList != null) {
+                        textList3.setAdapter(listAdapter);
+                    }
+                } else {
+                    //加载了更多数据的时候，重新创建Json数据对象
+                    ArrayList<JsonBean.Result.Data> moreJokesData = fromJson2.getResult().getData();
+                    //追加到第一个数据集合中，进行合并
+                    jokesDataList.addAll(moreJokesData);
+                    //刷新ListView
+                    listAdapter.notifyDataSetChanged();
+                }
+                break;
+            default:
+                break;
         }
+
     }
 
+    //适配器
+    public class APIStoreAdapter extends BaseAdapter {
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder;
+            if (convertView==null){
+                convertView=View.inflate(getActivity(),R.layout.jokes_list_item,null);
+                holder=new ViewHolder();
+                holder.contentText=(TextView)convertView.findViewById(R.id.content_text);
+                holder.timerText=(TextView)convertView.findViewById(R.id.timer_text);
+                //holder.imageView=(ImageView)convertView.findViewById(R.id.content_image);
+                convertView.setTag(holder);
+            }else {
+                holder=(ViewHolder)convertView.getTag();
+            }
+            APIData = (APIStoreBean.ShowApiResBody.Content)getItem(position);
+            holder.contentText.setText(APIData.getText());
+            holder.timerText.setText(APIData.getCt());
+            // Glide.with(getContext()).load(data.getUrl()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(holder.imageView);
+            return convertView;
+        }
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+        @Override
+        public Object getItem(int position) {
+            return APIDataList.get(position);
+        }
+        @Override
+        public int getCount() {
+            return APIDataList.size();
+        }
+
+    }
 
     //适配器
     public class ListAdapter extends BaseAdapter {
@@ -264,19 +354,100 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onRefresh() {
         switch (mViewPager.getCurrentItem()) {
             case 0:
-                //getDataFromServer();
+                getDataFromServer(0);
                 //设置刷新完成，进度圆圈圈停止转动。
                 swipeLayout1.setRefreshing(false);
                 break;
             case 1:
-                //getDataFromServer();
+                getDataFromServer(1);
                 swipeLayout2.setRefreshing(false);
                 break;
+            case 2:
+                getDataFromServer(2);
+                swipeLayout2.setRefreshing(false);
             default:
                 break;
         }
     }
-    private void getMoreDataFromServer(){}
+    /**
+     * 当加载更多数据时，就调用此方法
+     * 请求成功后，在onSuccess()方法中调用processData()方法进行数据解析时，第二个参数传入的是true
+     * 就会执行该方法中if语句中的else语句。
+     */
+    private void getMoreDataFromServer(){
+        HttpUtils utils=new HttpUtils();
+        switch (mViewPager.getCurrentItem()) {
+            case 0:
+                //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
+                utils.send(HttpRequest.HttpMethod.GET, URLList.CATEGORY_URL1 + page + URLList.CATEGORY_URL2,
+                        new RequestCallBack<String>() {
+
+                            //请求成功
+                            @Override
+                            public void onSuccess(ResponseInfo<String> responseInfo) {
+                                String result = responseInfo.result;
+                                processData(result, true,0);
+                            }
+
+                            //请求失败
+                            @Override
+                            public void onFailure(HttpException e, String s) {
+                                e.printStackTrace();
+                            }
+
+
+                        });
+                break;
+            case 1:
+                RequestParams requestParams=new RequestParams();
+                requestParams.addHeader("apikey", URLList.APISTORE_KEY);
+                    //send就是发送请求。参数一代表获取数据。参数二是请求API的地址，
+                    utils.send(HttpRequest.HttpMethod.GET,URLList.APISTORE_TEXT_URL+page2,requestParams
+                            , new RequestCallBack<String>() {
+
+                                //请求成功
+                                @Override
+                                public void onSuccess(ResponseInfo<String> responseInfo) {
+                                    String result=responseInfo.result;
+                                    processData(result,true,1);
+                                }
+
+                                //请求失败
+                                @Override
+                                public void onFailure(HttpException e, String s) {
+                                    e.printStackTrace();
+                                }
+
+
+
+                            });
+
+                break;
+            case 2:
+                utils.send(HttpRequest.HttpMethod.GET, URLList.TWO_CATEGORY_URL1 + page3 + URLList.TWO_CATEGORY_URL2+s1,
+                        //请求的是什么内容，泛型就写入相对应的数据类型。
+                        new RequestCallBack<String>() {
+                            //请求成功
+                            @Override
+                            public void onSuccess(ResponseInfo<String> responseInfo) {
+                                String result = responseInfo.result;
+                                processData(result,true,2);
+
+                            }
+
+                            //请求失败
+                            @Override
+                            public void onFailure(HttpException e, String s) {
+                                e.printStackTrace();
+                            }
+
+                        });
+                break;
+            default:
+                break;
+
+        }
+    }
     //上拉加载回调
     @Override
     public void onLoadMore() {
@@ -292,10 +463,19 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 break;
             case 1:
                 getMoreDataFromServer();
-                if (data != null) {
+                if (APIData!= null) {
                     page2++;
                 } else {
                     page2 = 2;
+                    Toast.makeText(getActivity(), "没有更多数据！", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case 2:
+                getMoreDataFromServer();
+                if (data != null) {
+                    page3++;
+                } else {
+                    page3 = 2;
                     Toast.makeText(getActivity(), "没有更多数据！", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -306,6 +486,7 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
     //ViewPager滑动回调，onPageScrolled()是滑动结束回调
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            getDataFromServer(position);
 
     }
 

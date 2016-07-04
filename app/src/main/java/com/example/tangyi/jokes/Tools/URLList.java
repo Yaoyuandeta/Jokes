@@ -14,4 +14,6 @@ public class URLList {
     public static final String IMAGE_URL="http://japi.juhe.cn/joke/img/text.from?key="+APPKEY+"&page=1&pagesize=20";
 
     public static final String BATE_URL="http://japi.juhe.cn/joke/content/list.from?key="+APPKEY+"&page=2&pagesize=10&sort=asc&time=1418745237";
+    public static final String APISTORE_TEXT_URL="http://apis.baidu.com/showapi_open_bus/showapi_joke/joke_text?page=";
+    public static final String APISTORE_KEY="70cb8b0073d1e7ed81634214d5e2ea5e";
 }

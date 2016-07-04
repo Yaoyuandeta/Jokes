@@ -76,7 +76,6 @@ public class MyListView extends ListView implements AbsListView.OnScrollListener
             lastItem = getLastVisiblePosition();
             //判断是否到达ListView的最底部，如果是最底部并且没有正在加载更多
             if (lastItem==getCount()-1&&!isLoadMore){
-                Log.d("TAG","加载更多...");
                 //显示尾布局
                 mFooterView.setPadding(0,0,0,0);
                 //将尾布局显示在最后一个Item上,尾布局就会直接展示在ListView的最后一个Item上，无需手动滑动
