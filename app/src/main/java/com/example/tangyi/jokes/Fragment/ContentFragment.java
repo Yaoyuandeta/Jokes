@@ -13,6 +13,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tangyi.jokes.Adapter.APIStoreAdapter;
+import com.example.tangyi.jokes.Adapter.ListAdapter;
 import com.example.tangyi.jokes.Bean.APIStoreBean;
 import com.example.tangyi.jokes.R;
 import com.example.tangyi.jokes.Bean.JsonBean;
@@ -20,7 +22,11 @@ import com.example.tangyi.jokes.Tools.MyListView;
 import com.example.tangyi.jokes.Tools.TimeStamp;
 import com.example.tangyi.jokes.Tools.URLList;
 import com.example.tangyi.jokes.Tools.ViewHolder;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.internal.bind.DateTypeAdapter;
+import com.google.gson.stream.JsonReader;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -29,7 +35,9 @@ import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 import com.viewpagerindicator.TabPageIndicator;
 
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -214,18 +222,23 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private void processData(String json,boolean isMore,int position){
 
-        Gson gson = new Gson();
         /**
          * gson.fromJson()函数意思是将Json数据转换为JAVA对象。
          * Json数据中字段对应的内容就是JAVA对象中字段内所存储的内容。
+         * JsonReader reader = new JsonReader(new StringReader(json));
+         * reader.setLenient(true);
+         * 这两句代码的意思是设置JSON数据解析时为宽松模式，不容易OOM
          */
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new StringReader(json));
+        reader.setLenient(true);
         switch (position) {
             case 0:
-                JsonBean fromJson = gson.fromJson(json, JsonBean.class);
+                JsonBean fromJson = gson.fromJson(reader, JsonBean.class);
                 if (!isMore) {
                     //定义Json数据对象。
                     jokesDataList = fromJson.getResult().getData();
-                    listAdapter = new ListAdapter();
+                    listAdapter = new ListAdapter(getActivity(),jokesDataList,data);
                     //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
                     if (jokesDataList != null) {
                         textList1.setAdapter(listAdapter);
@@ -240,10 +253,10 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 }
                 break;
             case 1:
-                APIStoreBean APIJson = gson.fromJson(json, APIStoreBean.class);
+                APIStoreBean APIJson = gson.fromJson(reader, APIStoreBean.class);
                 if (!isMore) {
                     APIDataList = APIJson.getShowapi_res_body().getContentlist();
-                    APIAdapter = new APIStoreAdapter();
+                    APIAdapter = new APIStoreAdapter(getActivity(),APIDataList,APIData);
                     if (APIDataList != null) {
                         textList2.setAdapter(APIAdapter);
                     }
@@ -254,11 +267,11 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     }
                 break;
             case 2:
-                JsonBean fromJson2 = gson.fromJson(json, JsonBean.class);
+                JsonBean fromJson2 = gson.fromJson(reader, JsonBean.class);
                 if (!isMore) {
                     //定义Json数据对象。
                     jokesDataList = fromJson2.getResult().getData();
-                    listAdapter = new ListAdapter();
+                    listAdapter = new ListAdapter(getActivity(),jokesDataList,data);
                     //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
                     if (jokesDataList != null) {
                         textList3.setAdapter(listAdapter);
@@ -278,77 +291,9 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     }
 
-    //适配器
-    public class APIStoreAdapter extends BaseAdapter {
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
-            if (convertView==null){
-                convertView=View.inflate(getActivity(),R.layout.jokes_list_item,null);
-                holder=new ViewHolder();
-                holder.contentText=(TextView)convertView.findViewById(R.id.content_text);
-                holder.timerText=(TextView)convertView.findViewById(R.id.timer_text);
-                //holder.imageView=(ImageView)convertView.findViewById(R.id.content_image);
-                convertView.setTag(holder);
-            }else {
-                holder=(ViewHolder)convertView.getTag();
-            }
-            APIData = (APIStoreBean.ShowApiResBody.Content)getItem(position);
-            holder.contentText.setText(APIData.getText());
-            holder.timerText.setText(APIData.getCt());
-            // Glide.with(getContext()).load(data.getUrl()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(holder.imageView);
-            return convertView;
-        }
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-        @Override
-        public Object getItem(int position) {
-            return APIDataList.get(position);
-        }
-        @Override
-        public int getCount() {
-            return APIDataList.size();
-        }
 
-    }
 
-    //适配器
-    public class ListAdapter extends BaseAdapter {
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
-            if (convertView==null){
-                convertView=View.inflate(getActivity(),R.layout.jokes_list_item,null);
-                holder=new ViewHolder();
-                holder.contentText=(TextView)convertView.findViewById(R.id.content_text);
-                holder.timerText=(TextView)convertView.findViewById(R.id.timer_text);
-                //holder.imageView=(ImageView)convertView.findViewById(R.id.content_image);
-                convertView.setTag(holder);
-            }else {
-                holder=(ViewHolder)convertView.getTag();
-            }
-            data = (JsonBean.Result.Data)getItem(position);
-            holder.contentText.setText(data.getContent());
-            holder.timerText.setText(data.getUpdatetime());
-           // Glide.with(getContext()).load(data.getUrl()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(holder.imageView);
-            return convertView;
-        }
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-        @Override
-        public Object getItem(int position) {
-            return jokesDataList.get(position);
-        }
-        @Override
-        public int getCount() {
-            return jokesDataList.size();
-        }
 
-    }
     //下拉刷新回调
     @Override
     public void onRefresh() {
@@ -364,7 +309,8 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 break;
             case 2:
                 getDataFromServer(2);
-                swipeLayout2.setRefreshing(false);
+                swipeLayout3.setRefreshing(false);
+                break;
             default:
                 break;
         }
@@ -454,30 +400,15 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
         switch (mViewPager.getCurrentItem()) {
             case 0:
                 getMoreDataFromServer();
-                if (data != null) {
-                    page++;
-                } else {
-                    page = 2;
-                    Toast.makeText(getActivity(), "没有更多数据！", Toast.LENGTH_SHORT).show();
-                }
+                page++;
                 break;
             case 1:
                 getMoreDataFromServer();
-                if (APIData!= null) {
-                    page2++;
-                } else {
-                    page2 = 2;
-                    Toast.makeText(getActivity(), "没有更多数据！", Toast.LENGTH_SHORT).show();
-                }
+                page2++;
                 break;
             case 2:
                 getMoreDataFromServer();
-                if (data != null) {
-                    page3++;
-                } else {
-                    page3 = 2;
-                    Toast.makeText(getActivity(), "没有更多数据！", Toast.LENGTH_SHORT).show();
-                }
+                page3++;
                 break;
             default:
                 break;

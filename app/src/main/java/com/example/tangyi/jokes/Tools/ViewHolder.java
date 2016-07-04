@@ -9,5 +9,6 @@ import android.widget.TextView;
 public class ViewHolder {
     public TextView contentText;
     public TextView timerText;
-    public ImageView imageView;
+    public ImageView jpgImg;
+    public ImageView gifImg;
 }

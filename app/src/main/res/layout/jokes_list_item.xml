@@ -11,7 +11,12 @@
         android:textColor="#000"
         android:textSize="18sp"/>
     <ImageView
-        android:id="@+id/content_image"
+        android:id="@+id/content_image_gif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"/>
+    <ImageView
+        android:id="@+id/content_image_jpg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"/>
