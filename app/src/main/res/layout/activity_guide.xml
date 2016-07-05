@@ -47,6 +47,4 @@
             android:layout_height="wrap_content"
             android:src="@drawable/shape_point_red"/>
     </RelativeLayout>
-
-
 </RelativeLayout>

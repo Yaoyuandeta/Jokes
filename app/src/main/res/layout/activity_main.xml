@@ -3,14 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
-    android:background="#fff">
+    android:background="@drawable/main_back">
   <!--LinearLayout内为主页面，里面分别是一个帧布局和底部的Title的Fragment。在Activity中是动态添加的另外一个Fragment。-->
   <!--所以这里的FrameLayout仅仅是作为占位使用，因为帧布局的性能消耗最低。-->
   <LinearLayout
       android:id="@+id/drawer_linear"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:background="#fff">
     <include
         android:id="@+id/home_layout"
         layout="@layout/title_bar"/>
@@ -28,9 +29,10 @@
   </LinearLayout>
   <LinearLayout
       android:id="@+id/drawer_fragment"
-      android:layout_width="200dp"
+      android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:layout_gravity="left">
+      android:layout_gravity="left"
+      >
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"

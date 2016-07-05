@@ -30,4 +30,5 @@ dependencies {
     compile files('libs/glide-3.7.0.jar')
     compile project(':ViewpagerIndicator')
     compile 'com.google.code.gson:gson:2.7'
+    compile files('libs/nineoldandroids-2.4.0.jar')
 }

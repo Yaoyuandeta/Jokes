@@ -8,7 +8,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
 import com.example.tangyi.jokes.R;
-import com.example.tangyi.jokes.Tools.SharedPreferencesUtils;
+import com.example.tangyi.jokes.Tools.PreferencesUtils;
 
 
 /**
@@ -43,7 +43,7 @@ public class SplashActivity extends Activity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 //利用SharedPreferencesUtils工具类的静态函数获取是否是第一进入APP，如果为true，就跳转到新手页面。反之跳转到主页面。
-                Boolean isFirstEnter= SharedPreferencesUtils.getBoolean(SplashActivity.this,"is_first_enter",true);
+                Boolean isFirstEnter= PreferencesUtils.getBoolean(SplashActivity.this,"is_first_enter",true);
                 Intent intent;
                 if (isFirstEnter){
                     intent=new Intent(SplashActivity.this,GuideActivity.class);

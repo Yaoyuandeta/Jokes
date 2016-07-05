@@ -1,72 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/setting_back"
     android:id="@+id/setting_layout">
-  <!--  <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ffffff"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:showDividers="end">
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:src="@drawable/ic_dengpao"
-            android:scaleType="fitCenter"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="#ffffff"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:text="夜间模式"/>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ffffff"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:showDividers="end">
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:src="@drawable/ic_power"
-            android:scaleType="fitCenter"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="#ffffff"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:text="退出"/>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ffffff"/>-->
     <LinearLayout
         android:id="@+id/about_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:orientation="horizontal"
-        android:showDividers="end">
+        android:showDividers="end"
+        android:paddingRight="15dp"
+        android:layout_centerInParent="true">
         <ImageView
             android:layout_width="25dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="27dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="15dp"
             android:src="@drawable/ic_about"
             android:scaleType="fitCenter"/>
         <TextView
@@ -74,12 +23,10 @@
             android:layout_height="match_parent"
             android:textColor="#ffffff"
             android:textSize="25sp"
+            android:layout_marginRight="30dp"
             android:gravity="center"
             android:text="关于"/>
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ffffff"/>
 
-</LinearLayout>
+
+</RelativeLayout>

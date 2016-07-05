@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.example.tangyi.jokes.R;
-import com.example.tangyi.jokes.Tools.SharedPreferencesUtils;
+import com.example.tangyi.jokes.Tools.PreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +112,7 @@ public class GuideActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //点击按钮后说明已经进入应用，下次进入时便不再需要展示引导页，所以改为false
-                SharedPreferencesUtils.setBoolean(GuideActivity.this,"is_first_enter",false);
+                PreferencesUtils.setBoolean(GuideActivity.this,"is_first_enter",false);
                 //跳转到主页面
                 startActivity(new Intent(GuideActivity.this,MainActivity.class));
                 finish();

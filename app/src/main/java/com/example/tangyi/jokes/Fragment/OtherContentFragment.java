@@ -202,55 +202,71 @@ public class OtherContentFragment extends Fragment implements SwipeRefreshLayout
          */
         switch (position) {
             case 0:
-                JsonBean fromJson = gson.fromJson(reader, JsonBean.class);
-                if (!isMore) {
-                    //定义Json数据对象。
-                    jokesDataList = fromJson.getResult().getData();
-                    listAdapter = new ListAdapter(getActivity(),jokesDataList,data);
-                    //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
-                    if (jokesDataList != null) {
-                        textList1.setAdapter(listAdapter);
+                try {
+
+
+                    JsonBean fromJson = gson.fromJson(reader, JsonBean.class);
+                    if (!isMore) {
+                        //定义Json数据对象。
+                        jokesDataList = fromJson.getResult().getData();
+                        listAdapter = new ListAdapter(getActivity(), jokesDataList, data);
+                        //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
+                        if (jokesDataList != null) {
+                            textList1.setAdapter(listAdapter);
+                        }
+                    } else {
+                        //加载了更多数据的时候，重新创建Json数据对象
+                        ArrayList<JsonBean.Result.Data> moreJokesData = fromJson.getResult().getData();
+                        //追加到第一个数据集合中，进行合并
+                        jokesDataList.addAll(moreJokesData);
+                        //刷新ListView
+                        listAdapter.notifyDataSetChanged();
                     }
-                } else {
-                    //加载了更多数据的时候，重新创建Json数据对象
-                    ArrayList<JsonBean.Result.Data> moreJokesData = fromJson.getResult().getData();
-                    //追加到第一个数据集合中，进行合并
-                    jokesDataList.addAll(moreJokesData);
-                    //刷新ListView
-                    listAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
                 break;
             case 1:
-                APIStoreBean APIJson = gson.fromJson(reader, APIStoreBean.class);
-                if (!isMore) {
-                    APIDataList = APIJson.getShowapi_res_body().getContentlist();
-                    APIAdapter = new APIImageAdapter(getActivity(),APIDataList,APIData);
-                    if (APIDataList != null) {
-                        textList2.setAdapter(APIAdapter);
+                try {
+                    APIStoreBean APIJson = gson.fromJson(reader, APIStoreBean.class);
+                    if (!isMore) {
+                        APIDataList = APIJson.getShowapi_res_body().getContentlist();
+                        APIAdapter = new APIImageAdapter(getActivity(), APIDataList, APIData);
+                        if (APIDataList != null) {
+                            textList2.setAdapter(APIAdapter);
+                        }
+                    } else {
+                        ArrayList<APIStoreBean.ShowApiResBody.Content> moreAPIData = APIJson.getShowapi_res_body().getContentlist();
+                        APIDataList.addAll(moreAPIData);
+                        APIAdapter.notifyDataSetChanged();
                     }
-                } else {
-                    ArrayList<APIStoreBean.ShowApiResBody.Content> moreAPIData = APIJson.getShowapi_res_body().getContentlist();
-                    APIDataList.addAll(moreAPIData);
-                    APIAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
                 break;
             case 2:
-                JsonBean fromJson2 = gson.fromJson(reader, JsonBean.class);
-                if (!isMore) {
-                    //定义Json数据对象。
-                    jokesDataList = fromJson2.getResult().getData();
-                    listAdapter = new ListAdapter(getActivity(),jokesDataList,data);
-                    //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
-                    if (jokesDataList != null) {
-                        textList3.setAdapter(listAdapter);
+                try {
+
+
+                    JsonBean fromJson2 = gson.fromJson(reader, JsonBean.class);
+                    if (!isMore) {
+                        //定义Json数据对象。
+                        jokesDataList = fromJson2.getResult().getData();
+                        listAdapter = new ListAdapter(getActivity(), jokesDataList, data);
+                        //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
+                        if (jokesDataList != null) {
+                            textList3.setAdapter(listAdapter);
+                        }
+                    } else {
+                        //加载了更多数据的时候，重新创建Json数据对象
+                        ArrayList<JsonBean.Result.Data> moreJokesData = fromJson2.getResult().getData();
+                        //追加到第一个数据集合中，进行合并
+                        jokesDataList.addAll(moreJokesData);
+                        //刷新ListView
+                        listAdapter.notifyDataSetChanged();
                     }
-                } else {
-                    //加载了更多数据的时候，重新创建Json数据对象
-                    ArrayList<JsonBean.Result.Data> moreJokesData = fromJson2.getResult().getData();
-                    //追加到第一个数据集合中，进行合并
-                    jokesDataList.addAll(moreJokesData);
-                    //刷新ListView
-                    listAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
                 break;
             default:

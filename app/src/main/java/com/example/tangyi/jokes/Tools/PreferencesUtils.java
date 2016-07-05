@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
  * SharedPreferencesUtils工具类。
  * Created by 在阳光下唱歌 on 2016/5/9.
  */
-public class SharedPreferencesUtils {
+public class PreferencesUtils {
 
     public static Boolean getBoolean(Context context,String key,Boolean value){
         SharedPreferences sharedPreferences=context.getSharedPreferences("config",Context.MODE_PRIVATE);

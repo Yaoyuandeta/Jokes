@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.example.tangyi.jokes.Adapter.ListAdapter;
 import com.example.tangyi.jokes.Bean.APIStoreBean;
 import com.example.tangyi.jokes.R;
 import com.example.tangyi.jokes.Bean.JsonBean;
+import com.example.tangyi.jokes.Tools.CacheUtils;
 import com.example.tangyi.jokes.Tools.MyListView;
 import com.example.tangyi.jokes.Tools.TimeStamp;
 import com.example.tangyi.jokes.Tools.URLList;
@@ -63,6 +65,8 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private ListAdapter listAdapter;
     private APIStoreAdapter APIAdapter;
     private TimeStamp timeStamp=new TimeStamp();
+    //缓存
+    private String cache1,cache2;
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
@@ -138,6 +142,11 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
         textList3 =(MyListView) view3.findViewById(R.id.home_list);
         textList3.setOnRefreshListener(this);
 
+        //写入缓存
+        cache1=CacheUtils.getCache(getActivity(),URLList.CATEGORY_URL1 + 1 + URLList.CATEGORY_URL2);
+        if (!TextUtils.isEmpty(cache1)){
+            processData(cache1,false,0);
+        }
         //初始化ViewPager数据
         getDataFromServer(0);
     }
@@ -156,6 +165,9 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
                             public void onSuccess(ResponseInfo<String> responseInfo) {
                                 String result = responseInfo.result;
                                 processData(result, false,0);
+                                //写入缓存
+                                CacheUtils.setCache(getActivity(),
+                                        URLList.CATEGORY_URL1 + 1 + URLList.CATEGORY_URL2,result);
                             }
 
                             //请求失败
@@ -181,6 +193,9 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                 s1=s;
                                 String result = responseInfo.result;
                                 processData(result, false,1);
+                                //写入缓存
+                                CacheUtils.setCache(getActivity(),
+                                        URLList.APISTORE_TEXT_URL+1,result);
                             }
                         });
                 break;
@@ -234,52 +249,66 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
         reader.setLenient(true);
         switch (position) {
             case 0:
-                JsonBean fromJson = gson.fromJson(reader, JsonBean.class);
-                if (!isMore) {
-                    //定义Json数据对象。
-                    jokesDataList = fromJson.getResult().getData();
-                    listAdapter = new ListAdapter(getActivity(),jokesDataList,data);
-                    //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
-                    if (jokesDataList != null) {
-                        textList1.setAdapter(listAdapter);
+                try {
+                    JsonBean fromJson = gson.fromJson(reader, JsonBean.class);
+                    if (!isMore) {
+                        //定义Json数据对象。
+                        jokesDataList = fromJson.getResult().getData();
+                        listAdapter = new ListAdapter(getActivity(), jokesDataList, data);
+                        //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
+                        if (jokesDataList != null) {
+                            textList1.setAdapter(listAdapter);
+                        }
+                    } else {
+                        //加载了更多数据的时候，重新创建Json数据对象
+                        ArrayList<JsonBean.Result.Data> moreJokesData = fromJson.getResult().getData();
+                        //追加到第一个数据集合中，进行合并
+                        jokesDataList.addAll(moreJokesData);
+                        //刷新ListView
+                        listAdapter.notifyDataSetChanged();
                     }
-                } else {
-                    //加载了更多数据的时候，重新创建Json数据对象
-                    ArrayList<JsonBean.Result.Data> moreJokesData = fromJson.getResult().getData();
-                    //追加到第一个数据集合中，进行合并
-                    jokesDataList.addAll(moreJokesData);
-                    //刷新ListView
-                    listAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
                 break;
             case 1:
-                APIStoreBean APIJson = gson.fromJson(reader, APIStoreBean.class);
-                if (!isMore) {
-                    APIDataList = APIJson.getShowapi_res_body().getContentlist();
-                    APIAdapter = new APIStoreAdapter(getActivity(),APIDataList,APIData);
-                    if (APIDataList != null) {
-                        textList2.setAdapter(APIAdapter);
-                    }
+                try {
+                    APIStoreBean APIJson = gson.fromJson(reader, APIStoreBean.class);
+                    if (!isMore) {
+                        APIDataList = APIJson.getShowapi_res_body().getContentlist();
+                        APIAdapter = new APIStoreAdapter(getActivity(), APIDataList, APIData);
+                        if (APIDataList != null) {
+                            textList2.setAdapter(APIAdapter);
+                        }
                     } else {
                         ArrayList<APIStoreBean.ShowApiResBody.Content> moreAPIData = APIJson.getShowapi_res_body().getContentlist();
                         APIDataList.addAll(moreAPIData);
                         APIAdapter.notifyDataSetChanged();
                     }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             case 2:
-                JsonBean fromJson2 = gson.fromJson(reader, JsonBean.class);
-                if (!isMore) {
-                    //定义Json数据对象。
-                    jokesDataList = fromJson2.getResult().getData();
-                    listAdapter = new ListAdapter(getActivity(),jokesDataList,data);
-                    //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
-                    if (jokesDataList != null) {
-                        textList3.setAdapter(listAdapter);
+                try {
+
+
+                    JsonBean fromJson2 = gson.fromJson(reader, JsonBean.class);
+                    if (!isMore) {
+                        //定义Json数据对象。
+                        jokesDataList = fromJson2.getResult().getData();
+                        listAdapter = new ListAdapter(getActivity(), jokesDataList, data);
+                        //当数据对象不为null时，也就是里面有数据时，设置适配器用于填充进ListView.
+                        if (jokesDataList != null) {
+                            textList3.setAdapter(listAdapter);
+                        }
+                    } else {
+                        ArrayList<JsonBean.Result.Data> moreJokesData = fromJson2.getResult().getData();
+                        jokesDataList.addAll(moreJokesData);
+                        listAdapter.notifyDataSetChanged();
                     }
-                } else {
-                    ArrayList<JsonBean.Result.Data> moreJokesData = fromJson2.getResult().getData();
-                    jokesDataList.addAll(moreJokesData);
-                    listAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
                 break;
             default:
@@ -414,13 +443,28 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
     //ViewPager滑动回调，onPageScrolled()是滑动结束回调
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            getDataFromServer(position);
 
     }
 
     @Override
     public void onPageSelected(int position) {
-
+        getDataFromServer(position);
+        switch (position){
+            case 0:
+                cache1=CacheUtils.getCache(getActivity(),URLList.CATEGORY_URL1 + 1 + URLList.CATEGORY_URL2);
+                if (!TextUtils.isEmpty(cache1)){
+                    processData(cache1,false,position);
+                }
+                break;
+            case 1:
+                cache2=CacheUtils.getCache(getActivity(),URLList.APISTORE_TEXT_URL+1);
+                if (!TextUtils.isEmpty(cache2)){
+                    processData(cache2,false,position);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

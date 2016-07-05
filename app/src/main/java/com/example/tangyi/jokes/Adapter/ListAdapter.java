@@ -37,7 +37,6 @@ public class ListAdapter extends BaseAdapter {
             holder.contentText=(TextView)convertView.findViewById(R.id.content_text);
             holder.timerText=(TextView)convertView.findViewById(R.id.timer_text);
             holder.jpgImg =(ImageView)convertView.findViewById(R.id.content_image_jpg);
-            //holder.gifImg=(ImageView)convertView.findViewById(R.id.content_image_gif);
             convertView.setTag(holder);
         }else {
             holder=(ViewHolder)convertView.getTag();
@@ -48,7 +47,6 @@ public class ListAdapter extends BaseAdapter {
         Glide.with(mActivity)
                 .load(data.getUrl())
                 .into(holder.jpgImg);
-        //Glide.with(mActivity).load(data.getUrl()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(holder.gifImg);
         return convertView;
     }
     @Override
