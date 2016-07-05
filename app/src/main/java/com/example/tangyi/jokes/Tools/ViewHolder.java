@@ -10,5 +10,4 @@ public class ViewHolder {
     public TextView contentText;
     public TextView timerText;
     public ImageView jpgImg;
-    public ImageView gifImg;
 }

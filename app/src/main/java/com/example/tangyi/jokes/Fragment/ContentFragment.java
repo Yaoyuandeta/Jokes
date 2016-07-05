@@ -277,11 +277,8 @@ public class ContentFragment extends Fragment implements SwipeRefreshLayout.OnRe
                         textList3.setAdapter(listAdapter);
                     }
                 } else {
-                    //加载了更多数据的时候，重新创建Json数据对象
                     ArrayList<JsonBean.Result.Data> moreJokesData = fromJson2.getResult().getData();
-                    //追加到第一个数据集合中，进行合并
                     jokesDataList.addAll(moreJokesData);
-                    //刷新ListView
                     listAdapter.notifyDataSetChanged();
                 }
                 break;

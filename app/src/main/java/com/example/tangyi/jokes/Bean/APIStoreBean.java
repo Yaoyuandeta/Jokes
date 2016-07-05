@@ -30,6 +30,27 @@ public class APIStoreBean {
         public class Content{
             private String ct;
             private String text;
+            private String title;
+            private String img;
+
+            public void setImg(String img) {
+                this.img = img;
+            }
+
+            public void setTitle(String title) {
+
+                this.title = title;
+            }
+
+            public String getImg() {
+
+                return img;
+            }
+
+            public String getTitle() {
+
+                return title;
+            }
 
             public void setText(String text) {
                 this.text = text;

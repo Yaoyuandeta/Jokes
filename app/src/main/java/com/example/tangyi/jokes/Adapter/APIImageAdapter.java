@@ -1,7 +1,6 @@
 package com.example.tangyi.jokes.Adapter;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -18,11 +17,11 @@ import java.util.ArrayList;
 /**
  * Created by 在阳光下唱歌 on 2016/7/5.
  */
-public class APIStoreAdapter extends BaseAdapter {
+public class APIImageAdapter extends BaseAdapter {
     private Activity mActivity;
     private ArrayList<APIStoreBean.ShowApiResBody.Content> APIDataList;
     private APIStoreBean.ShowApiResBody.Content APIData;
-    public APIStoreAdapter(Activity mActivity,ArrayList<APIStoreBean.ShowApiResBody.Content> APIDataList,
+    public APIImageAdapter(Activity mActivity, ArrayList<APIStoreBean.ShowApiResBody.Content> APIDataList,
                            APIStoreBean.ShowApiResBody.Content APIData){
         this.mActivity=mActivity;
         this.APIDataList=APIDataList;
@@ -42,7 +41,7 @@ public class APIStoreAdapter extends BaseAdapter {
             holder=(ViewHolder)convertView.getTag();
         }
         APIData = (APIStoreBean.ShowApiResBody.Content)getItem(position);
-        holder.contentText.setText(APIData.getText());
+        holder.contentText.setText(APIData.getTitle());
         holder.timerText.setText(APIData.getCt());
         Glide.with(mActivity)
                 .load(APIData.getImg())
